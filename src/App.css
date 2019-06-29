@@ -31,3 +31,32 @@
     transform: rotate(360deg);
   }
 }
+
+.gameboard {
+  margin: 36px 0;
+  background-color: #ccc;
+  color: #282c34;
+  font-size: calc(10px + 2vmin);
+  width: 600px;
+  height: 600px;
+}
+
+.cell {
+  border: 1px solid;
+  background-color: #ccc;
+  color: #white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  width: 198px;
+  height: 198px;
+  float: left;
+}
+
+.mark {
+  font-size: 120px;
+  font-weight: bold;
+  color: purple;
+}

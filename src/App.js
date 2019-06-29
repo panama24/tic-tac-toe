@@ -1,26 +1,66 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class Gameboard extends Component {
+  state = {
+    cells: [...Array(9)],
+    isX: true,
+  }
+
+  switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
+
+  placeMarker = i => {
+    this.setState(({ cells, isX }) => ({
+      cells: [
+        ...cells.slice(0, i),
+        isX ? 'X' : 'O',
+        ...cells.slice(i + 1)
+      ],
+    }));
+
+    this.isGameOver();
+  }
+
+  isGameOver = () => {
+    // winner?
+    // three in a row?
+    // tie?
+    // if not over, switch players
+    this.switch();
+  };
+
+  onClickHandler = i => {
+    const { cells } = this.state;
+    typeof cells[i] === 'undefined' && this.placeMarker(i);
+  };
+
+  render () {
+    const { cells } = this.state;
+
+    return (
+      <div className="gameboard">
+        {cells.map((content, i) => (
+          <div
+            className="cell"
+            key={i}
+            onClick={() => this.onClickHandler(i)}
+          >
+            <div className="mark">
+              {content}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 }
+
+const App = () => (
+  <div className="App">
+    <header className="App-header">
+      <Gameboard />
+    </header>
+  </div>
+);
 
 export default App;
