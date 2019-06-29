@@ -53,7 +53,7 @@ class Gameboard extends Component {
         ],
         ...grid.slice(rowIdx + 1),
       ],
-    }), () => !this.checkGameOver(rowIdx, cellIdx) ? this.switch() : this.endGame());
+    }), () => this.checkGameOver(rowIdx, cellIdx) ? this.endGame() : this.switch());
   }
 
   checkGameOver = (rowIdx, cellIdx) => {
@@ -77,7 +77,7 @@ class Gameboard extends Component {
       .map(row => row.every(cell => cell !== null))
       .every(val => val === true);
 
-    return (diagonal || threeAcross || threeVertical || tie) ? true : false;
+    return diagonal || threeAcross || threeVertical || tie;
   };
 
   onClickHandler = (rowIdx, cellIdx) => {
