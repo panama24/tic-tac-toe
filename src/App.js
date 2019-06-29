@@ -19,10 +19,12 @@ const Row = ({ rowIdx, onClickHandler, row }) => (
 
 class Gameboard extends Component {
   state = {
+    gameOver: false,
     grid: Array(3).fill(Array(3).fill(null)),
     isX: true,
   }
 
+  endGame = () => this.setState(({ gameOver }) => ({ gameOver: !gameOver }));
   switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
 
   placeMarker = (rowIdx, cellIdx) => {
@@ -36,21 +38,30 @@ class Gameboard extends Component {
         ],
         ...grid.slice(rowIdx + 1),
       ],
-    }));
-
-    this.isGameOver();
+    }), () => !this.checkGameOver(rowIdx, cellIdx) ? this.switch() : this.endGame());
   }
 
-  isGameOver = () => {
-    // winner?
-    // three in a row?
-    // tie?
-    // else
-    this.switch();
+  checkGameOver = (rowIdx, cellIdx) => {
+    const { grid, isX } = this.state;
+    const mark = isX ? 'X' : 'O';
+
+    // diagonal
+    const threeAcross = grid[rowIdx].every(cell => cell === mark);
+    const threeVertical = grid.map(row => row[cellIdx]).every(cell => cell === mark);
+    const tie = grid
+      .map(row => row.every(cell => cell !== null))
+      .every(val => val === true);
+
+    return (threeAcross || threeVertical || tie) ? true : false;
   };
 
   onClickHandler = (rowIdx, cellIdx) => {
-    const { grid } = this.state;
+    const { gameOver, grid } = this.state;
+
+    if (gameOver) {
+      return;
+    }
+
     !grid[rowIdx][cellIdx] && this.placeMarker(rowIdx, cellIdx);
   };
 
