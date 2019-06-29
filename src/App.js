@@ -41,7 +41,7 @@ class Gameboard extends Component {
   switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
 
   placeMarker = (rowIdx, cellIdx) => {
-    this.setState(({ grid, isX }) => ({
+    this.setState(({ grid }) => ({
       grid: [
         ...grid.slice(0, rowIdx),
         [
@@ -55,22 +55,27 @@ class Gameboard extends Component {
   }
 
   checkGameOver = (rowIdx, cellIdx) => {
-    const { grid, isX } = this.state;
+    const { grid } = this.state;
     const mark = this.getMark();
 
-    // diagonal
-    // if rowIdx is first && cellIdx is first
-    // check next rowIdx + 1 at cellIdx + 1 recursively
-    // if rowIdx is first && cellIdx is last
-    // check next rowIdx - 1 at cellIdx - 1 recursively
+    const rightDiagonal = grid[0][0] === mark &&
+      grid[1][1] === mark &&
+      grid[2][2] === mark;
 
+    const leftDiagonal = grid[0][2] === mark &&
+      grid[1][1] === mark &&
+      grid[2][0] === mark;
+
+    const diagonal = rightDiagonal || leftDiagonal;
     const threeAcross = grid[rowIdx].every(cell => cell === mark);
-    const threeVertical = grid.map(row => row[cellIdx]).every(cell => cell === mark);
+    const threeVertical = grid
+      .map(row => row[cellIdx])
+      .every(cell => cell === mark);
     const tie = grid
       .map(row => row.every(cell => cell !== null))
       .every(val => val === true);
 
-    return (threeAcross || threeVertical || tie) ? true : false;
+    return (diagonal || threeAcross || threeVertical || tie) ? true : false;
   };
 
   onClickHandler = (rowIdx, cellIdx) => {
