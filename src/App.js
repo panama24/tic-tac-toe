@@ -37,7 +37,9 @@ class Gameboard extends Component {
   }
 
   getMark = () => this.state.isX ? 'X' : 'O';
-  endGame = () => this.setState(({ gameOver }) => ({ gameOver: !gameOver }));
+  endGame = () => setTimeout(() => {
+    this.setState(({ gameOver }) => ({ gameOver: !gameOver }));
+  }, 1000);
   switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
 
   placeMarker = (rowIdx, cellIdx) => {
