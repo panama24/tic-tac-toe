@@ -24,6 +24,7 @@ class Gameboard extends Component {
     isX: true,
   }
 
+  getMark = () => this.state.isX ? 'X' : 'O';
   endGame = () => this.setState(({ gameOver }) => ({ gameOver: !gameOver }));
   switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
 
@@ -33,7 +34,7 @@ class Gameboard extends Component {
         ...grid.slice(0, rowIdx),
         [
           ...grid[rowIdx].slice(0, cellIdx),
-          isX ? 'X' : 'O',
+          this.getMark(),
           ...grid[rowIdx].slice(cellIdx + 1),
         ],
         ...grid.slice(rowIdx + 1),
@@ -43,7 +44,7 @@ class Gameboard extends Component {
 
   checkGameOver = (rowIdx, cellIdx) => {
     const { grid, isX } = this.state;
-    const mark = isX ? 'X' : 'O';
+    const mark = this.getMark();
 
     // diagonal
     const threeAcross = grid[rowIdx].every(cell => cell === mark);
