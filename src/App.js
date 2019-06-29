@@ -1,20 +1,41 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import './App.css';
+
+const Row = ({ rowIdx, onClickHandler, row }) => (
+  <Fragment>
+    {row.map((cell, idx) => (
+      <div
+        className="cell"
+        key={idx}
+        onClick={() => onClickHandler(rowIdx, idx)}
+      >
+        <div className="mark">
+          {cell}
+        </div>
+      </div>
+    ))}
+  </Fragment>
+);
 
 class Gameboard extends Component {
   state = {
     cells: [...Array(9)],
+    threeByThreeCells: Array(3).fill(Array(3).fill(null)),
     isX: true,
   }
 
   switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
 
-  placeMarker = i => {
-    this.setState(({ cells, isX }) => ({
-      cells: [
-        ...cells.slice(0, i),
-        isX ? 'X' : 'O',
-        ...cells.slice(i + 1)
+  placeMarker = (rowIdx, cellIdx) => {
+    this.setState(({ threeByThreeCells, isX }) => ({
+      threeByThreeCells: [
+        ...threeByThreeCells.slice(0, rowIdx),
+        [
+          ...threeByThreeCells[rowIdx].slice(0, cellIdx),
+          isX ? 'X' : 'O',
+          ...threeByThreeCells[rowIdx].slice(cellIdx + 1),
+        ],
+        ...threeByThreeCells.slice(rowIdx + 1),
       ],
     }));
 
@@ -25,30 +46,29 @@ class Gameboard extends Component {
     // winner?
     // three in a row?
     // tie?
-    // if not over, switch players
+    // else
     this.switch();
   };
 
-  onClickHandler = i => {
-    const { cells } = this.state;
-    typeof cells[i] === 'undefined' && this.placeMarker(i);
+  onClickHandler = (rowIdx, cellIdx) => {
+    const { threeByThreeCells } = this.state;
+    console.log('is null:', !threeByThreeCells[rowIdx][cellIdx]);
+    !threeByThreeCells[rowIdx][cellIdx] && this.placeMarker(rowIdx, cellIdx);
   };
 
   render () {
-    const { cells } = this.state;
+    const { threeByThreeCells } = this.state;
 
     return (
       <div className="gameboard">
-        {cells.map((content, i) => (
-          <div
-            className="cell"
-            key={i}
-            onClick={() => this.onClickHandler(i)}
-          >
-            <div className="mark">
-              {content}
-            </div>
-          </div>
+        {threeByThreeCells.map((row, idx) => (
+          <Row
+            className="row"
+            key={idx}
+            rowIdx={idx}
+            onClickHandler={this.onClickHandler}
+            row={row}
+          />
         ))}
       </div>
     );
