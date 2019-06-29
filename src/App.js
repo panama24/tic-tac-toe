@@ -1,6 +1,18 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
 
+const Grid = ({ grid, onClickHandler }) => (
+  grid.map((row, idx) => (
+    <Row
+      className="row"
+      key={idx}
+      rowIdx={idx}
+      onClickHandler={onClickHandler}
+      row={row}
+    />
+  ))
+);
+
 const Row = ({ rowIdx, onClickHandler, row }) => (
   <Fragment>
     {row.map((cell, idx) => (
@@ -47,6 +59,11 @@ class Gameboard extends Component {
     const mark = this.getMark();
 
     // diagonal
+    // if rowIdx is first && cellIdx is first
+    // check next rowIdx + 1 at cellIdx + 1 recursively
+    // if rowIdx is first && cellIdx is last
+    // check next rowIdx - 1 at cellIdx - 1 recursively
+
     const threeAcross = grid[rowIdx].every(cell => cell === mark);
     const threeVertical = grid.map(row => row[cellIdx]).every(cell => cell === mark);
     const tie = grid
@@ -67,19 +84,11 @@ class Gameboard extends Component {
   };
 
   render () {
-    const { grid } = this.state;
+    const { gameOver, grid } = this.state;
 
     return (
       <div className="gameboard">
-        {grid.map((row, idx) => (
-          <Row
-            className="row"
-            key={idx}
-            rowIdx={idx}
-            onClickHandler={this.onClickHandler}
-            row={row}
-          />
-        ))}
+        {gameOver ? <h1>GAME OVER</h1> : <Grid grid={grid} onClickHandler={this.onClickHandler} />}
       </div>
     );
   }
