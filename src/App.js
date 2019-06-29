@@ -19,23 +19,22 @@ const Row = ({ rowIdx, onClickHandler, row }) => (
 
 class Gameboard extends Component {
   state = {
-    cells: [...Array(9)],
-    threeByThreeCells: Array(3).fill(Array(3).fill(null)),
+    grid: Array(3).fill(Array(3).fill(null)),
     isX: true,
   }
 
   switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
 
   placeMarker = (rowIdx, cellIdx) => {
-    this.setState(({ threeByThreeCells, isX }) => ({
-      threeByThreeCells: [
-        ...threeByThreeCells.slice(0, rowIdx),
+    this.setState(({ grid, isX }) => ({
+      grid: [
+        ...grid.slice(0, rowIdx),
         [
-          ...threeByThreeCells[rowIdx].slice(0, cellIdx),
+          ...grid[rowIdx].slice(0, cellIdx),
           isX ? 'X' : 'O',
-          ...threeByThreeCells[rowIdx].slice(cellIdx + 1),
+          ...grid[rowIdx].slice(cellIdx + 1),
         ],
-        ...threeByThreeCells.slice(rowIdx + 1),
+        ...grid.slice(rowIdx + 1),
       ],
     }));
 
@@ -51,17 +50,16 @@ class Gameboard extends Component {
   };
 
   onClickHandler = (rowIdx, cellIdx) => {
-    const { threeByThreeCells } = this.state;
-    console.log('is null:', !threeByThreeCells[rowIdx][cellIdx]);
-    !threeByThreeCells[rowIdx][cellIdx] && this.placeMarker(rowIdx, cellIdx);
+    const { grid } = this.state;
+    !grid[rowIdx][cellIdx] && this.placeMarker(rowIdx, cellIdx);
   };
 
   render () {
-    const { threeByThreeCells } = this.state;
+    const { grid } = this.state;
 
     return (
       <div className="gameboard">
-        {threeByThreeCells.map((row, idx) => (
+        {grid.map((row, idx) => (
           <Row
             className="row"
             key={idx}
