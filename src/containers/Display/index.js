@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Results from '../../components/Results';
 import Gameboard from '../../components/Gameboard';
 
+import { isGameOver } from './helpers';
+
 class DisplayContainer extends Component {
   state = {
     endGameResult: null,
@@ -32,40 +34,12 @@ class DisplayContainer extends Component {
   }
 
   next = (rowIdx, cellIdx) => {
-    const res = this.checkGameOver(rowIdx, cellIdx);
-    res ? this.endGame(res) : this.switch();
-  }
-
-  checkGameOver = (rowIdx, cellIdx) => {
     const { grid } = this.state;
     const mark = this.getMark();
+    const res = isGameOver(cellIdx, grid, mark, rowIdx);
 
-    const rightDiagonal = grid[0][0] === mark &&
-      grid[1][1] === mark &&
-      grid[2][2] === mark;
-
-    const leftDiagonal = grid[0][2] === mark &&
-      grid[1][1] === mark &&
-      grid[2][0] === mark;
-
-    const diagonal = rightDiagonal || leftDiagonal;
-    const threeAcross = grid[rowIdx].every(cell => cell === mark);
-    const threeVertical = grid
-      .map(row => row[cellIdx])
-      .every(cell => cell === mark);
-
-    const tie = grid
-      .map(row => row.every(cell => cell !== null))
-      .every(val => val === true);
-
-    if (diagonal || threeAcross || threeVertical) {
-      return 'winner';
-    } else if (tie) {
-      return 'tie';
-    } else {
-      return null;
-    }
-  };
+    res ? this.endGame(res) : this.switch();
+  }
 
   onClickHandler = (rowIdx, cellIdx) => {
     const { endGameResult, grid } = this.state;
