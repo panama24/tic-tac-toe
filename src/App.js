@@ -31,16 +31,18 @@ const Row = ({ rowIdx, onClickHandler, row }) => (
 
 class Gameboard extends Component {
   state = {
-    gameOver: false,
+    gameOver: null,
     grid: Array(3).fill(Array(3).fill(null)),
     isX: true,
   }
 
   getMark = () => this.state.isX ? 'X' : 'O';
-  endGame = () => setTimeout(() => {
-    this.setState(({ gameOver }) => ({ gameOver: !gameOver }));
+
+  endGame = (res) => setTimeout(() => {
+    this.setState(({ gameOver }) => ({ gameOver: res }));
   }, 1000);
-  switch = () => this.setState(({ isX }) => ({ isX: !isX }));;
+
+  switch = () => this.setState(({ isX }) => ({ isX: !isX }));
 
   placeMarker = (rowIdx, cellIdx) => {
     this.setState(({ grid }) => ({
@@ -53,7 +55,12 @@ class Gameboard extends Component {
         ],
         ...grid.slice(rowIdx + 1),
       ],
-    }), () => this.checkGameOver(rowIdx, cellIdx) ? this.endGame() : this.switch());
+    }), () => this.next(rowIdx, cellIdx));
+  }
+
+  next = (rowIdx, cellIdx) => {
+    const res = this.checkGameOver(rowIdx, cellIdx);
+    res ? this.endGame(res) : this.switch();
   }
 
   checkGameOver = (rowIdx, cellIdx) => {
@@ -73,11 +80,18 @@ class Gameboard extends Component {
     const threeVertical = grid
       .map(row => row[cellIdx])
       .every(cell => cell === mark);
+
     const tie = grid
       .map(row => row.every(cell => cell !== null))
       .every(val => val === true);
 
-    return diagonal || threeAcross || threeVertical || tie;
+    if (diagonal || threeAcross || threeVertical) {
+      return 'winner';
+    } else if (tie) {
+      return 'tie';
+    } else {
+      return null;
+    }
   };
 
   onClickHandler = (rowIdx, cellIdx) => {
@@ -95,7 +109,7 @@ class Gameboard extends Component {
 
     return (
       <div className="gameboard">
-        {gameOver ? <h1>GAME OVER</h1> : <Grid grid={grid} onClickHandler={this.onClickHandler} />}
+        {gameOver ? <h1>{gameOver}</h1> : <Grid grid={grid} onClickHandler={this.onClickHandler} />}
       </div>
     );
   }
