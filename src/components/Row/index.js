@@ -12,9 +12,9 @@ const Row = ({ rowIdx, onClickHandler, row }) => {
           dark={isDark(idx, rowIdx)}
           onClick={() => onClickHandler(rowIdx, idx)}
         >
-          <div className="mark">
+          <Mark>
             {cell}
-          </div>
+          </Mark>
         </Cell>
       ))}
     </Fragment>
@@ -23,17 +23,20 @@ const Row = ({ rowIdx, onClickHandler, row }) => {
 
 export default Row;
 
-const CELL_WIDTH = '198px';
+const CELL_WIDTH = '200px';
 
 const Cell = styled.div`
-  border: 1px solid;
-  background-color: ${({ dark }) => dark ? 'black' : '#ccc'};
+  border-radius: 10%;
+  background-color: ${({ dark }) => dark ? '#080A52' : '#EB2188'};
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   width: ${CELL_WIDTH};
   height: ${CELL_WIDTH};
-  float: left;
+`;
+
+const Mark = styled.div`
+  font-size: 120px;
+  font-weight: bold;
+  color: #FAD744;
 `;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import Results from '../../components/Results';
 import Gameboard from '../../components/Gameboard';
 
@@ -55,11 +56,17 @@ class DisplayContainer extends Component {
     const { endGameResult, grid } = this.state;
 
     return (
-      <div className="display-container">
+      <Container>
         {endGameResult ? <Results result={endGameResult} /> : <Gameboard grid={grid} onClickHandler={this.onClickHandler} />}
-      </div>
+      </Container>
     );
   }
 }
 
 export default DisplayContainer;
+
+const Container = styled.div`
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+`;
