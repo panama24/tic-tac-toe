@@ -18,7 +18,13 @@ class DisplayContainer extends Component {
     this.setState(({ endGameResult }) => ({ endGameResult: res }));
   }, 1000);
 
-  switch = () => this.setState(({ isX }) => ({ isX: !isX }));
+  switch = () => {
+    const { isX } = this.state;
+    this.setState({ isX: !isX });
+    setTimeout(() => { if (isX) {
+      this.computerTurn();
+    }}, 500)
+  };
 
   placeMarker = (rowIdx, cellIdx) => {
     this.setState(({ grid }) => ({
@@ -42,6 +48,14 @@ class DisplayContainer extends Component {
     res ? this.endGame(res) : this.switch();
   }
 
+  computerTurn = () => {
+    const { grid } = this.state;
+    const availableMoves = this.getAvailableMoves(grid);
+    const chosenMove = availableMoves[Math.floor(Math.random()*availableMoves.length)];
+    const [rowIdx, cellIdx] = chosenMove;
+    this.onClickHandler(rowIdx, cellIdx);
+  };
+
   onClickHandler = (rowIdx, cellIdx) => {
     const { endGameResult, grid } = this.state;
 
@@ -52,8 +66,16 @@ class DisplayContainer extends Component {
     !grid[rowIdx][cellIdx] && this.placeMarker(rowIdx, cellIdx);
   };
 
+  getAvailableMoves = (grid) => grid.reduce((acc, row, rowIdx) =>
+    acc.concat(row.reduce((acc, cell, cellIdx) =>
+      !!cell ? acc : acc.concat([[rowIdx, cellIdx]]), [])), [])
+  // [X, undefined, Y]
+  // [], [].concat([0, 1]) = [[0, 1]], [[0, 1]]
+  // [].concat([]) = [] // [].concat([1, 2]) = [1, 2] // [].concat([[1,2]]) = [[1, 2]]
+
+
   render () {
-    const { endGameResult, grid } = this.state;
+    const { isX, endGameResult, grid } = this.state;
 
     return (
       <Container>
